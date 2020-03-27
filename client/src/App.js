@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Header from './components/header';
 import Footer from './components/footer';
-import MovieList from './components/content/MovieList';
+import MainPage from './components/content/MainPage';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <header className="header">
         <Header />
       </header>
-      <MovieList />
+      <MainPage />
       <Footer />
     </div>
   );

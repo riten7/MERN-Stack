@@ -116,6 +116,14 @@ body{
   margin-bottom: 0;
 }
 
+.movie-detail .list-group-item{
+  display: flex;
+  flex-flow: row nowrap;
+}
+.movie-detail .list-group-item h6{
+  margin-right: 5px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
