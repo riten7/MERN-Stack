@@ -19,13 +19,13 @@ The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
 ## Technology Stack
-Mongo db
-Express
-React (Basic use of react hooks)
-Node
+Mongo db <br />
+Express <br />
+React (Basic use of react hooks, react-redux stuffs) <br />
+Node <br />
 
 ## TO DO
-Implement nodemailer module for contact purpose
+Implement nodemailer module for contact purpose <br />
 Implemnt Informed Js for form related stuffs ....
 
 
