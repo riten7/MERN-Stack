@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import DisplayDetail from './DisplayDetail';
+import EditDetail from './EditDetail';
 
 const MovieDetail = (props) => {
+  const[isEditMode, setEditMode] = useState(false);
   const movie = useSelector(state => state.movieList.flat().filter(item => props.location.movieId && item._id === props.location.movieId));
   return (
     <div className="movie-detail-panel">
@@ -13,23 +16,13 @@ const MovieDetail = (props) => {
                 <img src={movie[0].poster} alt='poster' />
               </div>
               <div className="actions">
-                <button type="button">Edit</button>
+                <button type="button" onClick={() => setEditMode(true)}>{isEditMode ? 'Send' : 'Edit'}</button>
                 <button type="button">Delete</button>
               </div>
             </div>
           </div>
           <div className="col">
-            <h3>Movie: {movie[0].Title}</h3>
-            <ul className="list-group">
-              <li className="list-group-item"><h6>Year:</h6> {movie[0].year}</li>
-              <li className="list-group-item"><h6>Rated:</h6> {movie[0].year}</li>
-              <li className="list-group-item"><h6>Released:</h6> {movie[0].year}</li>
-              <li className="list-group-item"><h6>Runtime:</h6> {movie[0].year}</li>
-              <li className="list-group-item"><h6>Genre:</h6> {movie[0].year}</li>
-              <li className="list-group-item"><h6>Director:</h6> {movie[0].year}</li>
-              <li className="list-group-item"><h6>Actors:</h6> {movie[0].year}</li>
-              <li className="list-group-item"><h6>Imdb rating: </h6>{movie[0].year}</li>
-            </ul>
+            {isEditMode ? <EditDetail item = {movie[0]}/> : <DisplayDetail item = {movie[0]}/>}
           </div>
         </div>
       </div>

@@ -46,10 +46,12 @@ const AddMoviePopup = () => {
   return (
     <form className="popup" onSubmit={handleSubmit} onChange={onHandleChange}>
       <div className="popup_inner">
-        <label>Title: <input type="text" name="nameField" /></label>
-        <label>Type: <input type="text" name="typeField" /></label>
-        <label>Year: <input type="text" name="yearField"/></label>
-        <label>Poster: <input type="text" name="posterField" /></label>
+        <ul className="list-group">
+          <li className="list-group-item"><label>Title: <input type="text" name="nameField"/></label></li>
+          <li className="list-group-item"><label>Type: <input type="text" name="typeField"/></label></li>
+          <li className="list-group-item"><label>Year: <input type="text" name="yearField"/></label></li>
+          <li className="list-group-item"><label>Poster: <input type="text" name="posterField"/></label></li>
+        </ul>
         <button type="submit" value="Submit" disabled={!isValid}>Submit</button>
       </div>
     </form>
