@@ -7,7 +7,7 @@ const MainPage = () => (
   <main>
     <Switch>
       <Route exact path='/' component={MovieList}/>
-      <Route path='/detail' component={MovieDetail}/>
+      <Route exact path='/movie/:id' component={MovieDetail}/>
     </Switch>
   </main>
 )

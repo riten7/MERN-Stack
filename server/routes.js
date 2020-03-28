@@ -37,4 +37,29 @@ router.post("/movie", (request, response) => {
   });
 });
 
+router.put("/movie/:id", (request, response) => {
+  const itemId = request.params.id;
+  const item = request.body;
+  collection.updateOne({ id: itemId }, { $set: item }, (error, result) => {
+    if (error) throw error;
+    // send back entire updated list, to make sure frontend data is up-to-date
+    collection.find().toArray(function (_error, _result) {
+      if (_error) throw _error;
+      response.json(_result);
+    });
+  });
+});
+
+   router.delete("/movie/:id", (request, response) => {
+      const itemId = request.params.id;
+      collection.deleteOne({ id: itemId }, function (error, result) {
+         if (error) throw error;
+         // send back entire updated list after successful request
+         collection.find().toArray(function (_error, _result) {
+            if (_error) throw _error;
+            response.json(_result);
+         });
+      });
+   });
+
 module.exports = router;

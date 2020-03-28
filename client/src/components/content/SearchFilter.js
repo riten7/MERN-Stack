@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFilterText, setAddMoviePopupShown } from '../../actions/actionCreators';
 import AddMoviePopup from './AddMoviePopup';
+import { Col, Input, Button } from 'antd';
 
 const SearchFilter = () => {
   const dispatch = useDispatch();
@@ -14,14 +15,16 @@ const SearchFilter = () => {
   const openPopup = useCallback(() => dispatch(setAddMoviePopupShown(true)), [dispatch]);
 
   return (
-    <div className="searchPanel">
-      <div className="container">
-        <input type="text" className="form-control" placeholder="Type your movie here ..."
-          onChange={handleInputChange} /> 
-        <button type="button" className="addMovieBtn" onClick={openPopup}>Add Movie</button>
-      </div>
-      { popupShown ? <AddMoviePopup /> : null }
-    </div>
+    <>
+      <Col span={14} offset={3}>
+        <Input className="searchInput" type="text" placeholder="Search your movie here..."
+          onChange={handleInputChange} />
+      </Col>
+      <Col span={6} offset={1}>
+        <Button className="addMovieBtn" type="primary" onClick={openPopup}>Add Movie</Button>
+      </Col>
+      {popupShown ? <AddMoviePopup /> : null}
+    </>
   );
 }
 

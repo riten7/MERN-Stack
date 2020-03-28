@@ -21,8 +21,9 @@ You will also see any lint errors in the console.
 ## Technology Stack
 Mongo db <br />
 Express <br />
-React (Basic use of react hooks, react-redux stuffs) <br />
+React (Basic use of react hooks, react-redux stuffs, react router) <br />
 Node <br />
+Ant Design <br />
 
 ## TO DO
 Implement nodemailer module for contact purpose <br />

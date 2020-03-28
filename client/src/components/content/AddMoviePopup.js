@@ -1,60 +1,135 @@
-import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setMovieList, setAddMoviePopupShown } from '../../actions/actionCreators';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAddMoviePopupShown, setMovieList } from '../../actions/actionCreators';
 import { BASE_URL } from '../Constant';
+import { Modal, Form, Input, Button, Select, DatePicker } from 'antd';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
 
-const AddMoviePopup = () => {
-  const [isValid, setIsValid] = useState(false);
+const AddMoviePopup = (props) => {
+  const layout = {
+    labelCol: {
+      span: 6,
+    },
+    wrapperCol: {
+      span: 16,
+    },
+  };
+  const tailLayout = {
+    wrapperCol: {
+      offset: 16
+    },
+  };
+  const [form] = Form.useForm();
+  const { Option } = Select;
+  const { TextArea } = Input;
   const dispatch = useDispatch();
+  const popupShown = useSelector(state => state.popupShown);
+
+   const closePopup = () => (dispatch(setAddMoviePopupShown(false)));
+
+  const getInitialValues = () => {
+    const item = props.movie;
+    if (item) {
+      return {
+        title: item.title,
+        type: item.type,
+        rating: parseInt(item.rating, 10),
+        poster: item.poster,
+        description: item.description,
+        date: moment(item.date, 'YYYY/MM/DD')
+      }
+    }
+  }
+
+  const redirectToTarget = () => {
+    // return <Link to={{
+    //   pathname: '/'
+    // }}>
+    // </Link>
+  }
+
+  const getBaseUrl = () => {
+    return props.movie ? BASE_URL + "/movie/" + props.movie.id : BASE_URL + "/movie";
+  }
 
   const addMovieToDb = useCallback((data) => {
-    fetch(BASE_URL + "/movie", {
-      method: 'POST',
+    fetch(getBaseUrl(), {
+      method: props.movie ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: data,
     })
       .then(res => res.json())
-      .then(response => {
-        dispatch(setAddMoviePopupShown(false));
+      .then((response) => {
+        closePopup();
         dispatch(setMovieList(response));
+        redirectToTarget();
       })
       .catch(() => console.log('error'));
-  });
+  }, [props.movie, closePopup, dispatch]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    let title = event.currentTarget.nameField.value;
-    let type = event.currentTarget.typeField.value;
-    let year = event.currentTarget.yearField.value;
-    let poster = event.currentTarget.posterField.value;
-    if (isValid) {
-      addMovieToDb(JSON.stringify({ title, type, year, poster }));
-    }
+  const onReset = () => {
+    form.resetFields();
+  };
+
+  const handleSubmit = (values) => {
+    if (!props.movie) { values.id = getMovieId(); }
+    values.date = values.date.format('YYYY/MM/DD');;
+    closePopup();
+    addMovieToDb(JSON.stringify(values));
   }
 
-  const onHandleChange = (event) => {
-    let title = event.currentTarget.nameField.value;
-    let type = event.currentTarget.typeField.value;
-    let year = event.currentTarget.yearField.value;
-    let poster = event.currentTarget.posterField.value;
-
-    if (title.length > 1 && type.length > 1 && year.length > 1 && poster.length > 1) {
-      setIsValid(true);
-    }
-  }
+  const getMovieId = () => (Math.random().toString(36).replace('0.', ''));
 
   return (
-    <form className="popup" onSubmit={handleSubmit} onChange={onHandleChange}>
-      <div className="popup_inner">
-        <ul className="list-group">
-          <li className="list-group-item"><label>Title: <input type="text" name="nameField"/></label></li>
-          <li className="list-group-item"><label>Type: <input type="text" name="typeField"/></label></li>
-          <li className="list-group-item"><label>Year: <input type="text" name="yearField"/></label></li>
-          <li className="list-group-item"><label>Poster: <input type="text" name="posterField"/></label></li>
-        </ul>
-        <button type="submit" value="Submit" disabled={!isValid}>Submit</button>
-      </div>
-    </form>
+    <Modal
+      visible={popupShown}
+      title="Add Movie"
+      onOk={closePopup}
+      onCancel={closePopup}
+      footer={null}
+    >
+      <Form className="moviePopup" {...layout} form={form} initialValues={getInitialValues()} onFinish={handleSubmit}>
+        <Form.Item name="title" label="Title"
+          rules={[{ required: true, },]}>
+          <Input />
+        </Form.Item>
+        <Form.Item name="type" label="Type"
+          rules={[{ required: true, },]}>
+          <Select allowClear>
+            <Option value="Movie">Movie</Option>
+            <Option value="Series">Series</Option>
+            <Option value="Documentary">Documentary</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="rating" label="Rating"
+          rules={[{ required: true, },]}>
+          <Select allowClear>
+            <Option value="1">1</Option>
+            <Option value="2">2</Option>
+            <Option value="3">3</Option>
+            <Option value="4">4</Option>
+            <Option value="5">5</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="date" label="Released on"
+          rules={[{ required: true, },]}>
+          <DatePicker />
+        </Form.Item>
+        <Form.Item name="poster" label="Poster"
+          rules={[{ required: true, },]}>
+          <Input />
+        </Form.Item>
+        <Form.Item name="description" label="Description"
+          rules={[{ required: true, },]}>
+          <TextArea placeholder='Description...' autoSize />
+        </Form.Item>
+        <Form.Item {...tailLayout}>
+          {props.movie ? null : <Button htmlType="button" onClick={onReset}>Reset</Button>}
+          <Button type="primary" htmlType="submit">Submit</Button>
+        </Form.Item>
+      </Form>
+    </Modal>
   )
 }
 

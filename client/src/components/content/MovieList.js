@@ -4,6 +4,7 @@ import { setMovieList } from '../../actions/actionCreators';
 import SearchFilter from './SearchFilter';
 import { BASE_URL } from '../Constant';
 import MovieListItem from './MovieListItem';
+import { Row } from 'antd';
 
 const MovieList = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,12 +29,14 @@ const MovieList = () => {
 
   return (
     <div className="movie-container">
-      <div className="container">
+      <Row className="movieSearch">
         <SearchFilter />
-        {!isLoading && !error &&
-         <MovieListItem />
-        }
-      </div>
+      </Row>
+      {!isLoading && !error &&
+        <Row className="movieList">
+          <MovieListItem />
+        </Row>
+      }
     </div>
   )
 }

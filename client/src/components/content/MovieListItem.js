@@ -2,33 +2,31 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { PLACEHOLDER_IMG } from '../Constant';
 import { Link } from 'react-router-dom';
+import { Col, Card } from 'antd';
 
 const MovieListItem = () => {
 
+  const { Meta } = Card;
   const movieList = useSelector((state) => {
     return getFilteredList(state.movieList, state.filterMovieBy);
   });
   return (
     <>
       {movieList && movieList.length > 0 ? movieList.map(item => (
-        <div key={item._id} className="row">
+        <Col key={item._id+item.id} className="gutter-row" span={6} offset={1}>
           <Link to={{
-            pathname: '/detail',
+            pathname: '/movie/'+item.id,
             movieId: item._id
           }}>
-            <div className="col-md-3 col-sm-4 col-xs-6">
-              <div className="movieCard card">
-                <img src={item.poster ? item.poster : PLACEHOLDER_IMG} className="card-img-top" alt="..." />
-                <div className="card-body">
-                  <h5>{item.title}</h5>
-                  <p>{item.year}</p>
-                  <p>{item.type}</p>
-                </div>
-              </div>
-            </div>
+            <Card hoverable
+              style={{ width: 240 }} bodyStyle={{ padding: 0 }}
+              cover={<img src={item.poster ? item.poster : PLACEHOLDER_IMG} className="card-img-top" alt={item.title} />}
+            >
+              <Meta title={item.title} description={item.type} />
+            </Card>
           </Link>
-        </div>
-      )) : <div>No Movie Found</div>}
+        </Col>
+      )) : <div className="noMovieFound">No Movie Found</div>}
     </>
   );
 }
