@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { Col, Card } from 'antd';
 
 const MovieListItem = () => {
-
   const { Meta } = Card;
   const movieList = useSelector((state) => {
     return getFilteredList(state.movieList, state.filterMovieBy);
@@ -14,14 +13,10 @@ const MovieListItem = () => {
     <>
       {movieList && movieList.length > 0 ? movieList.map(item => (
         <Col key={item._id+item.id} className="gutter-row" span={6} offset={1}>
-          <Link to={{
-            pathname: `/movie/${item.id}`,
-            movieId: item.id
-          }}>
+          <Link to={{ pathname: `/movie/${item.id}`}}>
             <Card hoverable
-              style={{ width: 240 }} bodyStyle={{ padding: 0 }}
-              cover={<img src={item.poster ? item.poster : PLACEHOLDER_IMG} className="card-img-top" alt={item.title} />}
-            >
+              style={{ width: 240 }}
+              cover={<img src={item.poster ? item.poster : PLACEHOLDER_IMG} className="card-img-top" alt={item.title} />}>
               <Meta title={item.title} description={item.type} />
             </Card>
           </Link>

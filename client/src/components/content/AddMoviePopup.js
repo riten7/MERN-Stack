@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAddMoviePopupShown, setMovieList } from '../../actions/actionCreators';
+import { setAddMoviePopupShown, addMovieToList } from '../../actions/actionCreators';
 import { BASE_URL } from '../Constant';
 import { Modal, Form, Input, Button, Select, DatePicker } from 'antd';
 import moment from 'moment';
@@ -20,6 +20,7 @@ const AddMoviePopup = (props) => {
       offset: 16
     },
   };
+  const isEditMode = props.movie;
   const [form] = Form.useForm();
   const { Option } = Select;
   const { TextArea } = Input;
@@ -30,50 +31,44 @@ const AddMoviePopup = (props) => {
   const closePopup = () => (dispatch(setAddMoviePopupShown(false)));
 
   const getInitialValues = () => {
-    const item = props.movie;
-    if(item) {
-    return {
-      title: item.title,
-      type: item.type,
-      rating: parseInt(item.rating),
-      poster: item.poster,
-      description: item.description,
-      date: moment(item.date, 'YYYY/MM/DD')
+    if (isEditMode) {
+      return {
+        title: props.movie.title,
+        type: props.movie.type,
+        rating: parseInt(props.movie.rating),
+        poster: props.movie.poster,
+        description: props.movie.description,
+        date: moment(props.movie.date, 'YYYY/MM/DD')
+      }
     }
-    }
-  }
-
-  const redirectToTarget = () => {
-    return history.push('/');
   }
 
   const getBaseUrl = () => {
-    return props.movie ? BASE_URL + "/movie/" + props.movie.id : BASE_URL + "/movie";
+    return isEditMode ? BASE_URL + "/movie/" + props.movie.id : BASE_URL + "/movie";
   }
 
   const addMovieToDb = useCallback((data) => {
     fetch(getBaseUrl(), {
-      method: props.movie ? 'PUT' : 'POST',
+      method: isEditMode ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: data,
     })
       .then(res => res.json())
       .then((response) => {
-        closePopup();
-        dispatch(setMovieList(response));
-        redirectToTarget();
+        dispatch(setAddMoviePopupShown(false));
+        if (!isEditMode) { dispatch(addMovieToList(response)); }
+        return history.push('/');
       })
       .catch(() => console.log('error'));
-  }, [props.movie, closePopup, dispatch]);
+  }, [isEditMode, history, dispatch]);
 
   const onReset = () => {
     form.resetFields();
   };
 
   const handleSubmit = (values) => {
-    if (!props.movie) { values.id = getMovieId(); }
+    if (!isEditMode) { values.id = getMovieId(); }
     values.date = values.date.format('YYYY/MM/DD');;
-    closePopup();
     addMovieToDb(JSON.stringify(values));
   }
 
@@ -82,11 +77,10 @@ const AddMoviePopup = (props) => {
   return (
     <Modal
       visible={popupShown}
-      title={props.movie ? 'Edit Movie' : 'Add Movie'}
+      title={isEditMode ? 'Edit Movie' : 'Add Movie'}
       onOk={closePopup}
       onCancel={closePopup}
-      footer={null}
-    >
+      footer={null}>
       <Form className="moviePopup" {...layout} form={form} initialValues={getInitialValues()} onFinish={handleSubmit}>
         <Form.Item name="title" label="Title"
           rules={[{ required: true, },]}>
@@ -123,7 +117,7 @@ const AddMoviePopup = (props) => {
           <TextArea placeholder='Description...' autoSize />
         </Form.Item>
         <Form.Item {...tailLayout}>
-          {props.movie ? null : <Button htmlType="button" onClick={onReset}>Reset</Button>}
+          {isEditMode ? null : <Button htmlType="button" onClick={onReset}>Reset</Button>}
           <Button type="primary" htmlType="submit">Submit</Button>
         </Form.Item>
       </Form>

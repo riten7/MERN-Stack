@@ -5,6 +5,13 @@ export const setMovieList = (list) => ({
 	}
 });
 
+export const addMovieToList = (movie) => ({
+  type: 'ADD',
+  payload: {
+    movie
+  }
+});
+
 export const clearMovieList = () => ({
   type: 'CLEAR'
 })

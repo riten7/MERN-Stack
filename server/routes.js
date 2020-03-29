@@ -25,27 +25,19 @@ router.get("/getMovies", (request, response) => {
   });
 });
 
-   router.get("/getMovie/:id", (request, response) => {
-      const itemId = request.params.id;
-      console.log('item got id', itemId);
-      collection.findOne({ id: itemId }, (error, result) => {
-         if (error) throw error;
-         // return item
-         console.log('item got', result);
-         response.json(result);
-      });
-   });
+router.get("/getMovie/:id", (request, response) => {
+  const itemId = request.params.id;
+  collection.findOne({ id: itemId }, (error, result) => {
+    if (error) throw error;
+    response.json(result);
+  });
+});
 
 router.post("/movie", (request, response) => {
   const item = request.body;
   collection.insertOne(item, (error, result) => { // callback of insert
     if (error) throw error;
-    response.json(result);
-    // return updated list
-    // collection.find().toArray((_error, _result) => { // callback of find
-    //   if (_error) throw _error;
-    //   response.json(_result);
-    // });
+    response.json(result.ops);
   });
 });
 
@@ -63,17 +55,12 @@ router.put("/movie/:id", (request, response) => {
   });
 });
 
-   router.delete("/movie/:id", (request, response) => {
-      const itemId = request.params.id;
-      collection.deleteOne({ id: itemId }, function (error, result) {
-         if (error) throw error;
-         response.json(result);
-         // send back entire updated list after successful request
-        //  collection.find().toArray(function (_error, _result) {
-        //     if (_error) throw _error;
-        //     response.json(_result);
-        //  });
-      });
-   });
+router.delete("/movie/:id", (request, response) => {
+  const itemId = request.params.id;
+  collection.deleteOne({ id: itemId }, function (error, result) {
+    if (error) throw error;
+    response.json(result);
+  });
+});
 
 module.exports = router;

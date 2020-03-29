@@ -13,36 +13,32 @@ const MovieDetail = (props) => {
     { id: 2, name: 'Thriller' },
     { id: 3, name: 'Drama' }
   ];
+  const movieId = props.match.params.id;
   const [movieData, setMovieData] = useState('');
   const dispatch = useDispatch();
   const history = useHistory();
   const popupShown = useSelector(state => state.popupShown);
-  
   const handlEditMovie = useCallback(() => dispatch(setAddMoviePopupShown(true)), [dispatch]);
 
-  const redirectToTarget = () => {
-    return history.push('/');
-  }
-
   useEffect(() => {
-      fetch(BASE_URL + "/getMovie/" + props.location.movieId)
+      fetch(BASE_URL + "/getMovie/" + movieId)
         .then(res => res.json())
         .then((response) => {
           setMovieData(response);
         })
         .catch(() => console.log('error'))
-  }, [fetch]);
+  }, [movieId]);
 
   const handleDeleteMovie = useCallback(() => {
-    fetch(BASE_URL + "/movie/" + props.location.movieId, {
+    fetch(BASE_URL + "/movie/" + movieId, {
       method: 'DELETE'
     })
       .then(res => res.json())
       .then(() => {
-        redirectToTarget();
+        return history.push('/');
       })
       .catch(() => console.log('error'));
-  },[dispatch, props]);
+  },[movieId, history]);
 
 
   return (

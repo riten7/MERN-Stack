@@ -1,4 +1,7 @@
 @import '~antd/dist/antd.css';
+body {
+  font-size: 14px;
+}
 
 .footer {
   background: #2d2b2a;
@@ -69,6 +72,17 @@
 
 .card-body p {
   color: #999;
+}
+
+.ant-card-body {
+  padding: 10px;
+  background-color: #708a14;
+  text-align: center;
+}
+
+.ant-card-body .ant-card-meta-title,
+.ant-card-body .ant-card-meta-description {
+    color: #f2e9e1;
 }
 
 .movieDetail {
