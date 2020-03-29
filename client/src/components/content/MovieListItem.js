@@ -15,8 +15,8 @@ const MovieListItem = () => {
       {movieList && movieList.length > 0 ? movieList.map(item => (
         <Col key={item._id+item.id} className="gutter-row" span={6} offset={1}>
           <Link to={{
-            pathname: '/movie/'+item.id,
-            movieId: item._id
+            pathname: `/movie/${item.id}`,
+            movieId: item.id
           }}>
             <Card hoverable
               style={{ width: 240 }} bodyStyle={{ padding: 0 }}

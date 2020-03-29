@@ -5,6 +5,9 @@ const moviesReducer = (state = initialData, action) => {
     case 'LOAD':
       return [...state, action.payload.list].flat();
 
+    case 'CLEAR':
+      return [];
+
     default:
       return state;
   }

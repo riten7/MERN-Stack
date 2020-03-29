@@ -5,6 +5,10 @@ export const setMovieList = (list) => ({
 	}
 });
 
+export const clearMovieList = () => ({
+  type: 'CLEAR'
+})
+
 export const setFilterText = (filterBy) => ({
   type: 'FILTER',
   payload: {

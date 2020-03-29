@@ -19,7 +19,7 @@
   display: inline-block;
 }
 
-.footer ul li a {
+.footer ul li p {
   display: block;
   padding: .4rem .7rem;
   font-size: .9rem;

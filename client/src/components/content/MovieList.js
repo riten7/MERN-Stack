@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { setMovieList } from '../../actions/actionCreators';
+import { setMovieList, clearMovieList } from '../../actions/actionCreators';
 import SearchFilter from './SearchFilter';
 import { BASE_URL } from '../Constant';
 import MovieListItem from './MovieListItem';
-import { Row } from 'antd';
+import { Row, Spin } from 'antd';
 
 const MovieList = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +25,9 @@ const MovieList = () => {
   useEffect(() => {
     setIsLoading(true);
     fetchData();
+    return function cleanup() {
+      dispatch(clearMovieList());
+    };
   }, [fetchData]);
 
   return (
@@ -32,10 +35,11 @@ const MovieList = () => {
       <Row className="movieSearch">
         <SearchFilter />
       </Row>
-      {!isLoading && !error &&
+      {!isLoading && !error ?
         <Row className="movieList">
           <MovieListItem />
         </Row>
+        : <Spin size="large"/>
       }
     </div>
   )

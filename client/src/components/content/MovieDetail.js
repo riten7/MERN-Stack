@@ -1,11 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Tag, Rate, Button } from 'antd';
 import AddMoviePopup from './AddMoviePopup';
 import Utils from '../../utils/GenreUtils';
-import { setAddMoviePopupShown, setMovieList } from '../../actions/actionCreators';
+import { setAddMoviePopupShown } from '../../actions/actionCreators';
 import { BASE_URL } from '../Constant';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const MovieDetail = (props) => {
   const genres = [
@@ -13,49 +13,55 @@ const MovieDetail = (props) => {
     { id: 2, name: 'Thriller' },
     { id: 3, name: 'Drama' }
   ];
+  const [movieData, setMovieData] = useState('');
   const dispatch = useDispatch();
+  const history = useHistory();
   const popupShown = useSelector(state => state.popupShown);
-  const movie = useSelector(state => state.movieList.flat().filter(item => props.location.movieId && item._id === props.location.movieId));
-
+  
   const handlEditMovie = useCallback(() => dispatch(setAddMoviePopupShown(true)), [dispatch]);
 
   const redirectToTarget = () => {
-    // return <Link to={{
-    //   pathname: '/'
-    // }}>
-    // </Link>
+    return history.push('/');
   }
 
+  useEffect(() => {
+      fetch(BASE_URL + "/getMovie/" + props.location.movieId)
+        .then(res => res.json())
+        .then((response) => {
+          setMovieData(response);
+        })
+        .catch(() => console.log('error'))
+  }, [fetch]);
+
   const handleDeleteMovie = useCallback(() => {
-    fetch(BASE_URL + "/movie/" + movie[0].id, {
+    fetch(BASE_URL + "/movie/" + props.location.movieId, {
       method: 'DELETE'
     })
       .then(res => res.json())
-      .then((response) => {
-        dispatch(setMovieList(response));
+      .then(() => {
         redirectToTarget();
       })
       .catch(() => console.log('error'));
-  },[dispatch, movie]);
+  },[dispatch, props]);
 
 
   return (
     <div className="movieDetail">
       <Row>
         <Col span={8} offset={1}>
-          <img alt={movie[0].title} width='85%' src={movie[0].poster} />
+          <img alt={movieData.title} width='85%' src={movieData.poster} />
         </Col>
         <Col span={12} offset={1}>
-          <h1>{movie[0].title}</h1>
+          <h1>{movieData.title}</h1>
           <hr />
           <strong> Type: </strong>
-          <p>{movie[0].type}</p>
+          <p>{movieData.type}</p>
           <hr />
           <strong> Released On: </strong>
-          <p>{movie[0].date}</p>
+          <p>{movieData.date}</p>
           <hr />
           <strong> Description: </strong>
-          <p>{movie[0].description}</p>
+          <p>{movieData.description}</p>
           <hr />
           <div className='genere'>
             <span className='genereTitle'>
@@ -63,7 +69,7 @@ const MovieDetail = (props) => {
             </span>
             {genres.map(genere => <Tag color={Utils.randomColor()} key={genere.id}>{genere.name}</Tag>)}
           </div>
-          <Rate className='rate' value={parseInt(movie[0].rating)} />
+          <Rate className='rate' value={parseInt(movieData.rating)} />
           <hr />
           <div className="actions-movie">
             <Button className="editMovieBtn" onClick={handlEditMovie}>Edit</Button>
@@ -72,7 +78,7 @@ const MovieDetail = (props) => {
           </div>
         </Col>
       </Row>
-      {popupShown ? <AddMoviePopup movie={movie[0]} /> : null}
+      {popupShown ? <AddMoviePopup movie={movieData} /> : null}
     </div>
   )
 }

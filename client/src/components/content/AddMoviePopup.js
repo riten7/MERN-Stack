@@ -4,7 +4,7 @@ import { setAddMoviePopupShown, setMovieList } from '../../actions/actionCreator
 import { BASE_URL } from '../Constant';
 import { Modal, Form, Input, Button, Select, DatePicker } from 'antd';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const AddMoviePopup = (props) => {
   const layout = {
@@ -23,30 +23,28 @@ const AddMoviePopup = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
   const { TextArea } = Input;
+  const history = useHistory();
   const dispatch = useDispatch();
   const popupShown = useSelector(state => state.popupShown);
 
-   const closePopup = () => (dispatch(setAddMoviePopupShown(false)));
+  const closePopup = () => (dispatch(setAddMoviePopupShown(false)));
 
   const getInitialValues = () => {
     const item = props.movie;
-    if (item) {
-      return {
-        title: item.title,
-        type: item.type,
-        rating: parseInt(item.rating, 10),
-        poster: item.poster,
-        description: item.description,
-        date: moment(item.date, 'YYYY/MM/DD')
-      }
+    if(item) {
+    return {
+      title: item.title,
+      type: item.type,
+      rating: parseInt(item.rating),
+      poster: item.poster,
+      description: item.description,
+      date: moment(item.date, 'YYYY/MM/DD')
+    }
     }
   }
 
   const redirectToTarget = () => {
-    // return <Link to={{
-    //   pathname: '/'
-    // }}>
-    // </Link>
+    return history.push('/');
   }
 
   const getBaseUrl = () => {
@@ -84,7 +82,7 @@ const AddMoviePopup = (props) => {
   return (
     <Modal
       visible={popupShown}
-      title="Add Movie"
+      title={props.movie ? 'Edit Movie' : 'Add Movie'}
       onOk={closePopup}
       onCancel={closePopup}
       footer={null}
